@@ -1,0 +1,270 @@
+// # License & Terms
+//
+// This file is part of **Cascara**.
+//
+// **Cascara** is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program. If not, see <https://www.gnu.org/licenses/>.
+//
+// ---
+//
+// ## Special Runtime Exception
+//
+// As a special exception, the copyright holders of this library give you
+// permission to link this library with independent modules to produce an
+// executable, regardless of the license terms of these independent modules,
+// and to copy and distribute the resulting executable under terms of your
+// choice, provided that you also meet, for each linked independent module,
+// the terms and conditions of the license of that module.
+//
+// An independent module is a module which is not derived from or based on
+// this library. If you modify this library, you may extend this exception
+// to your version of the library, but you are not obligated to do so. If
+// you do not wish to do so, delete this exception statement from your
+// version.
+
+
+package io.github.qishr.cascara.lang.java.model;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/// Represents the API being documented, encapsulating its modules and packages.
+/// Provides methods to add and retrieve modules, packages, and types, as well as sorting them.
+public class SemanticModel extends JavaSemanticNode {
+    /// The name of the API
+    private String title = "API";
+
+    /// List of modules included in the API.
+    private final List<ModuleNode> modules = new ArrayList<>();
+
+    /// List of packages included in the API.
+    private final List<PackageNode> packages = new ArrayList<>();
+
+    // store children by the interface type (no concrete TypeNode mention)
+    private final List<TypeNode> types = new ArrayList<>();
+
+    private List<MethodNode> methods = new ArrayList<>();
+
+    /// Represents the unnamed module in the API.
+    private final ModuleNode unnamedModule = new ModuleNode("");
+
+    /// List of applied annotations.
+    private final List<AppliedAnnotationNode> appliedAnnotations = new ArrayList<>();
+
+    /// List of links.
+    private final List<Link> links = new ArrayList<>();
+
+    private final List<Dependency> dependencies = new ArrayList<>();
+
+    /// Constructs an empty Api instance with the given name.
+    /// @param title The name of the API
+    public SemanticModel(String title) {
+        this.title = title;
+    }
+
+    public void addDependency(Dependency dependency) {
+        dependencies.add(dependency);
+    }
+
+    public List<Dependency> getDependencies() {
+        return dependencies;
+    }
+
+    public Dependency getDependency(String packageName) {
+        for (Dependency dependency : dependencies) {
+            if (dependency.getPackageName().equals(packageName)) {
+                return dependency;
+            }
+        }
+        return null;
+    }
+
+    public String getTitle() { return title; }
+
+    /// Adds a module to the API.
+    /// @param node the ModuleNode instance to add.
+    public void addModule(ModuleNode node) {
+        modules.add(node);
+    }
+
+    /// Returns the list of modules in the API.
+    /// @return List of ModuleNode objects representing the modules.
+    public List<ModuleNode> getModules() {
+        return modules;
+    }
+
+    /// Adds a method to the API.
+    /// @param node the MethodNode instance to add.
+    public void addMethod(MethodNode node) {
+        methods.add(node);
+    }
+
+    /// Returns the list of methods in the API.
+    /// @return List of MethodNode objects representing the methods.
+    public List<MethodNode> getMethods() {
+        return methods;
+    }
+
+    /// Retrieves a module matching the specified qualified name.
+    /// @param qualifiedName the fully qualified name of the module.
+    /// @return the matching ModuleNode if found, or null otherwise.
+    public ModuleNode getModuleNode(String qualifiedName) {
+        for (ModuleNode moduleNode : modules) {
+            if (moduleNode.getName().toString().equals(qualifiedName)){
+                return moduleNode;
+            }
+        }
+        return null;
+    }
+
+    /// Returns the unnamed module of the API.
+    /// @return the unnamed ModuleNode.
+    public ModuleNode getUnnamedModuleNode() {
+        return unnamedModule;
+    }
+
+    /// Adds a package to the API.
+    /// @param node the PackageNode instance to add.
+    public void addPackage(PackageNode node) {
+        packages.add(node);
+    }
+
+    /// Returns the list of packages in the API.
+    /// @return List of PackageNode objects representing the packages.
+    public List<PackageNode> getPackages() {
+        return packages;
+    }
+
+    /// Adds an applied annotation
+    /// @param annotation the annotation
+    public void addAppliedAnnotation(AppliedAnnotationNode annotation) {
+        appliedAnnotations.add(annotation);
+    }
+
+    /// Returns the list of applied annotations
+    /// @return list of applied annotations
+    public List<AppliedAnnotationNode> getAppliedAnnotations() {
+        return appliedAnnotations;
+    }
+
+    /// Adds a link
+    /// @param link the link to add
+    public void addLink(Link link) {
+        links.add(link);
+    }
+
+    /// Returns the list of link.
+    /// @return list of links
+    public List<Link> getLinks() {
+        return links;
+    }
+
+    public void addType(TypeNode typeNode) {
+        TypeNode existingTypeNode = getTypeNode(typeNode.getName());
+        if (existingTypeNode != null) {
+            types.remove(existingTypeNode);
+        }
+        types.add(typeNode);
+    }
+
+    /// Gets the list of types *owned* by this instance.
+    public List<TypeNode> getTypes() {
+        return List.copyOf(types);
+    }
+
+    /// Retrieves a package matching the specified qualified name.
+    /// @param qualifiedName the fully qualified name of the package.
+    /// @return the matching PackageNode if found, or null otherwise.
+    public PackageNode getPackageNode(String qualifiedName) {
+        for (PackageNode packageNode : packages) {
+            if (packageNode.getName().toString().equals(qualifiedName)){
+                return packageNode;
+            }
+            // if (packageNode.getName().fullyQualifiedName().equals(qualifiedName)){
+            //     return packageNode;
+            // }
+        }
+        return null;
+    }
+
+    /// Retrieves a package matching the specified qualified name.
+    /// @param name the fully qualified name of the package.
+    /// @return the matching PackageNode if found, or null otherwise.
+    public PackageNode getPackageNode(JlsName name) {
+        String fqn = name.fullyQualifiedName();
+        for (PackageNode packageNode : packages) {
+            String packageQualifiedName = packageNode.getName().toString();
+            if (packageQualifiedName.equals(fqn)){
+                return packageNode;
+            }
+        }
+        return null;
+    }
+
+    /// Gets the list of records *owned* by this instance.
+    public List<TypeNode> getRecords() {
+        List<TypeNode> out = new ArrayList<>();
+        for (TypeNode t : types)
+            if (t.isRecord())
+                out.add(t);
+        return out;
+    }
+
+    /// Retrieves a TypeNode based on its fully qualified name.
+    /// @param qualifiedName the fully qualified name of the type.
+    /// @return the matching TypeNode if found, or null otherwise.
+    public TypeNode getTypeNode(String qualifiedName) {
+        for (TypeNode typeNode : types) {
+            if (typeNode.getName().fullyQualifiedName().equals(qualifiedName)){
+                return typeNode;
+            }
+        }
+        for (Dependency dependency : dependencies) {
+            for (TypeNode typeNode : dependency.getTypes()) {
+                if (typeNode.getName().fullyQualifiedName().equals(qualifiedName)) {
+                    return typeNode;
+                }
+            }
+        }
+        return null;
+    }
+
+    /// Retrieves a TypeNode based on its fully qualified name.
+    /// @param name the fully qualified name of the type.
+    /// @return the matching TypeNode if found, or null otherwise.
+    public TypeNode getTypeNode(JlsName name) {
+        String fqn = name.fullyQualifiedName();
+        for (TypeNode typeNode : types) {
+            if (typeNode.getName().fullyQualifiedName().equals(fqn)){
+                return typeNode;
+            }
+        }
+        return null;
+    }
+
+    /// Sorts the types in descending order by qualified name and sorts all child types recursively.
+    public void sort() {
+        packages.sort((o1, o2) -> o2.getName().simpleName().compareTo(o1.getName().simpleName()));
+        for (PackageNode pkg : getPackages()) {
+            pkg.sort();
+        }
+        for (TypeNode type : getTypes()) {
+            type.sort();
+        }
+    }
+
+    @Override
+    public List<JavaSemanticNode> getChildren() {
+        return new ArrayList<>(modules);
+    }
+}
