@@ -74,8 +74,8 @@ import com.sun.source.doctree.StartElementTree;
 import com.sun.source.util.DocTreePath;
 import com.sun.source.util.DocTrees;
 
-import io.github.qishr.cascara.common.diagnostic.Reporter;
-import io.github.qishr.cascara.common.diagnostic.StandardReporter;
+import io.github.qishr.cascara.common.diagnostic.report.Reporter;
+import io.github.qishr.cascara.common.diagnostic.report.LocalReporter;
 
 import org.mockito.Mock;
 
@@ -90,7 +90,7 @@ public class MockedDocletEnvironment {
     protected Types typeUtilsMock;
     protected DocTrees treeUtilsMock;
 
-    @Mock static Reporter reporter = new StandardReporter();
+    @Mock static Reporter reporter = new LocalReporter();
     //  {
     //     @Override
     //     public void print(javax.tools.Diagnostic.Kind kind, String message) {

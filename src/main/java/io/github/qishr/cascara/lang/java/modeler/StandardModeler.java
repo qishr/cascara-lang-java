@@ -47,7 +47,7 @@ import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.qishr.cascara.common.diagnostic.code.GenericDiagnosticCode;
+import io.github.qishr.cascara.common.diagnostic.message.GenericMessage;
 import io.github.qishr.cascara.lang.java.exception.JavaModelerException;
 // import io.github.qishr.cascara.lang.java.exception.JavaParserException;
 import io.github.qishr.cascara.lang.java.model.AnnotationNode;
@@ -59,7 +59,7 @@ import io.github.qishr.cascara.lang.java.model.FieldNode;
 import io.github.qishr.cascara.lang.java.model.InterfaceNode;
 import io.github.qishr.cascara.lang.java.model.JlsName;
 import io.github.qishr.cascara.lang.java.model.MethodNode;
-import io.github.qishr.cascara.lang.java.model.ModelUtil;
+import io.github.qishr.cascara.lang.java.model.VariableTypeParser;
 import io.github.qishr.cascara.lang.java.model.Modifier;
 import io.github.qishr.cascara.lang.java.model.ModuleNode;
 import io.github.qishr.cascara.lang.java.model.NameUtil;
@@ -80,7 +80,7 @@ public class StandardModeler implements Modeler<Module, Package, Class<?>, Field
             PackageReference packageReference = new PackageReference(packageString);
             // TODO
             // moduleNode.addPackage(packageReference);
-            throw new JavaModelerException(GenericDiagnosticCode.UNIMPLEMENTED_METHOD, "moduleNode.addPackage");
+            throw new JavaModelerException(GenericMessage.UNIMPLEMENTED_METHOD, "moduleNode.addPackage");
         }
         for (Annotation annotation : m.getAnnotations()) {
             AnnotationNode annoNode = modelAnnotation(annotation);
@@ -166,7 +166,7 @@ public class StandardModeler implements Modeler<Module, Package, Class<?>, Field
 
     @Override
     public FieldNode modelField(Field field) {
-        VariableTypeNode vt = ModelUtil.parseVariableType(field.getType().getTypeName());
+        VariableTypeNode vt = VariableTypeParser.parseVariableType(field.getType().getTypeName());
         JlsName typeName = NameUtil.createTypeName(field.getDeclaringClass().getName());
         JlsName fieldName = NameUtil.createMemberName(typeName, field.getName());
         FieldNode fieldNode = new FieldNode(vt, fieldName);
@@ -203,7 +203,7 @@ public class StandardModeler implements Modeler<Module, Package, Class<?>, Field
 
     @Override
     public ParamNode modelParam(Parameter parameter) {
-        VariableTypeNode vt = ModelUtil.parseVariableType(parameter.getType().getTypeName());
+        VariableTypeNode vt = VariableTypeParser.parseVariableType(parameter.getType().getTypeName());
         JlsName paramName = NameUtil.createMemberName(parameter.getName());
         return new ParamNode(vt, paramName);
     }

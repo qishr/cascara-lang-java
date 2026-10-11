@@ -32,7 +32,6 @@
 // you do not wish to do so, delete this exception statement from your
 // version.
 
-
 package io.github.qishr.cascara.lang.java.model;
 
 import java.io.Serial;
@@ -40,14 +39,16 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-///
 /// See Java Language Specification (JLS) [JlsChapter 4. Types, Values, and Variables](https://docs.oracle.com/javase/specs/jls/se24/html/jls-4.html).
 public class VariableTypeNode implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
+
     String fullTypeName = "";
     Link link = null;
+
     String rawTypeName = "";
+
     int arrayDimensions = 0;
     VariableTypeNode typeParameterDeclaration = null;
     String variableName = "";
@@ -91,6 +92,9 @@ public class VariableTypeNode implements Serializable {
     }
 
     public void setRawTypeName(String name) {
+        if (name.contains("<")) {
+            System.out.println("Debug: ParseResultHandler");
+        }
         rawTypeName = name;
     }
 
@@ -121,7 +125,7 @@ public class VariableTypeNode implements Serializable {
     }
 
     public String toString() {
-        return ModelUtil.stringify(this);
+        return VariableTypeParser.stringify(this);
     }
 
 
@@ -138,7 +142,6 @@ public class VariableTypeNode implements Serializable {
         TypeParameter() {
             // Nothing to see here
         }
-
 
         public String getBoundingParameter() {
             return boundingParameter;

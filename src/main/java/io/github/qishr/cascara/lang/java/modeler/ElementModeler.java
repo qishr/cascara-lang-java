@@ -73,7 +73,6 @@ import io.github.qishr.cascara.lang.java.model.InterfaceNode;
 import io.github.qishr.cascara.lang.java.model.JlsName;
 import io.github.qishr.cascara.lang.java.model.Link;
 import io.github.qishr.cascara.lang.java.model.MethodNode;
-import io.github.qishr.cascara.lang.java.model.ModelUtil;
 import io.github.qishr.cascara.lang.java.model.ModuleNode;
 import io.github.qishr.cascara.lang.java.model.NameUtil;
 import io.github.qishr.cascara.lang.java.model.PackageNode;
@@ -86,6 +85,7 @@ import io.github.qishr.cascara.lang.java.model.SourceCodeLocation;
 import io.github.qishr.cascara.lang.java.model.Text;
 import io.github.qishr.cascara.lang.java.model.TypeNode;
 import io.github.qishr.cascara.lang.java.model.VariableTypeNode;
+import io.github.qishr.cascara.lang.java.model.VariableTypeParser;
 import io.github.qishr.cascara.lang.java.model.Text.Segment;
 import io.github.qishr.cascara.lang.java.modeler.MarkdownParser.TokenKind;
 
@@ -95,6 +95,7 @@ import com.sun.source.doctree.DocTree;
 import com.sun.source.doctree.DocTree.Kind;
 import com.sun.source.doctree.LinkTree;
 import com.sun.source.doctree.ParamTree;
+import com.sun.source.doctree.ReferenceTree;
 import com.sun.source.doctree.StartElementTree;
 import com.sun.source.tree.CompilationUnitTree;
 import com.sun.source.util.DocSourcePositions;
@@ -180,7 +181,7 @@ public class ElementModeler implements Modeler<ModuleElement, PackageElement, Ty
         setModifiers(typeNode, element.getModifiers());
         setAppliedAnnotations(typeNode, element);
         collectAllSupertypes(element.asType(), typeNode.getSupertypes());
-        typeNode.getSupertypes().addFirst(ModelUtil.parseVariableType("java.lang.Object"));
+        typeNode.getSupertypes().addFirst(VariableTypeParser.parseVariableType("java.lang.Object"));
         findImplementedInterfaces(element, typeNode.getImplementedInterfaces());
         setDocumentation(typeNode, element);
         setSourcePath(typeNode, element);
@@ -201,7 +202,7 @@ public class ElementModeler implements Modeler<ModuleElement, PackageElement, Ty
         this.fromType = element.getEnclosingElement().asType().toString();
         this.fromPackage = getPackageName(element);
         String simpleName = element.getSimpleName().toString();
-        VariableTypeNode vt = ModelUtil.parseVariableType(element.asType().toString());
+        VariableTypeNode vt = VariableTypeParser.parseVariableType(element.asType().toString());
         JlsName fieldName = NameUtil.createMemberName(simpleName);
         FieldNode fieldNode = new FieldNode(vt, fieldName);
         fieldNode.setConstantValue((Serializable) element.getConstantValue());
@@ -300,7 +301,7 @@ public class ElementModeler implements Modeler<ModuleElement, PackageElement, Ty
                 if (tm != null) {
                     typeName = tm.toString();
                 }
-                VariableTypeNode vt = ModelUtil.parseVariableType(typeName);
+                VariableTypeNode vt = VariableTypeParser.parseVariableType(typeName);
                 JlsName fieldName = NameUtil.createMemberName(element.getSimpleName().toString());
                 FieldNode enumConstant = new FieldNode(vt, fieldName);
                 enumNode.getConstants().add(enumConstant);
@@ -334,9 +335,13 @@ public class ElementModeler implements Modeler<ModuleElement, PackageElement, Ty
     /// @param modifiers The set of Modifier enums from language model.
     public void setModifiers(AbstractMember node, Set<Modifier> modifiers) {
         for (Modifier modifier : modifiers) {
-            io.github.qishr.cascara.lang.java.model.Modifier mod =
-                io.github.qishr.cascara.lang.java.model.Modifier.valueOf(modifier.name());
-            node.addModifier(mod);
+            try {
+                io.github.qishr.cascara.lang.java.model.Modifier mod =
+                    io.github.qishr.cascara.lang.java.model.Modifier.valueOf(modifier.name());
+                node.addModifier(mod);
+            } catch (IllegalArgumentException e) {
+                System.out.println("ERROR ignored: " + e.getMessage());
+            }
         }
     }
 
@@ -380,7 +385,7 @@ public class ElementModeler implements Modeler<ModuleElement, PackageElement, Ty
                     typeString = typeString.substring(2);
                 }
 
-                VariableTypeNode typeRef = ModelUtil.parseVariableType(typeString);
+                VariableTypeNode typeRef = VariableTypeParser.parseVariableType(typeString);
 
                 String entryName = annotationMethod.getSimpleName().toString();
                 AnnotationValue value = entry.getValue();
@@ -411,7 +416,7 @@ public class ElementModeler implements Modeler<ModuleElement, PackageElement, Ty
         for (VariableElement parameter : ee.getParameters()) {
             String simpleName = parameter.getSimpleName().toString();
             String paramTypeName = getParamType(ee, simpleName);
-            VariableTypeNode vt = ModelUtil.parseVariableType(paramTypeName);
+            VariableTypeNode vt = VariableTypeParser.parseVariableType(paramTypeName);
             JlsName paramName = NameUtil.createMemberName(simpleName);
             ParamNode param = new ParamNode(vt, paramName);
             ParamTree paramTree = getParamTree(dct, parameter);
@@ -777,7 +782,23 @@ public class ElementModeler implements Modeler<ModuleElement, PackageElement, Ty
             case LINK, LINK_PLAIN:
                 linkTree = (LinkTree)docTree;
                 segment.setKind(Segment.Kind.LINK);
-                String cleanLink = removeParentheses(getDocTreePart(docTree, 1));
+
+
+
+                String docTreePart = getDocTreePart(docTree, 1);
+                String cleanLink = removeParentheses2(docTreePart);
+
+                // ParseResultHandler
+
+                if (cleanLink.contains("handleParseResul")) {
+                    ReferenceTree refTree = linkTree.getReference();
+                    docTreePart = getDocTreePart(docTree, 1);
+                    cleanLink = removeParentheses2(docTreePart);
+                    // System.out.println("Debug: createReference");
+                }
+
+
+
                 link = Link.to(NameUtil.createReference(cleanLink)).from(here());
                 link.setSourceCodeLocation(sourceLocation);
                 api.addLink(link);
@@ -923,7 +944,7 @@ public class ElementModeler implements Modeler<ModuleElement, PackageElement, Ty
                 String name = s.toString();
                 if (!"java.lang.Object".equals(name)) {
                     if (!isInterface(s)){
-                        result.addFirst(ModelUtil.parseVariableType(name));
+                        result.addFirst(VariableTypeParser.parseVariableType(name));
                     }
                     collectAllSupertypes(s, result);
                 }
@@ -950,7 +971,7 @@ public class ElementModeler implements Modeler<ModuleElement, PackageElement, Ty
     public void findImplementedInterfaces(TypeElement typeElement, List<VariableTypeNode> result) {
         List<? extends TypeMirror> interfaces = typeElement.getInterfaces();
         for (TypeMirror interfaceType : interfaces) {
-            result.add(ModelUtil.parseVariableType(interfaceType.toString()));
+            result.add(VariableTypeParser.parseVariableType(interfaceType.toString()));
         }
     }
 
@@ -1080,6 +1101,22 @@ public class ElementModeler implements Modeler<ModuleElement, PackageElement, Ty
             if (end < expression.length()) {
                 r += expression.substring(end + 1);
             }
+            return r;
+        }
+        return expression;
+    }
+
+    public String removeParentheses2(String expression) {
+        int start = expression.indexOf('(');
+        if (start > -1) {
+            // int end = expression.indexOf(')', start);
+            String r = "";
+            if (start > 0) {
+                r = expression.substring(0, start);
+            }
+            // if (end < expression.length()) {
+            //     r += expression.substring(end + 1);
+            // }
             return r;
         }
         return expression;

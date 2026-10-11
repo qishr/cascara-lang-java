@@ -36,13 +36,14 @@
 package io.github.qishr.cascara.lang.java.processor;
 
 import java.io.InputStream;
+import java.io.Reader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.github.qishr.cascara.common.diagnostic.Reporter;
+import io.github.qishr.cascara.common.diagnostic.report.Reporter;
 import io.github.qishr.cascara.common.lang.util.LanguageOptions;
 import io.github.qishr.cascara.common.lang.processor.Tokenizer;
 import io.github.qishr.cascara.lang.java.JavaOptions;
@@ -117,6 +118,11 @@ public class JavaTokenizer extends AbstractJavaProcessor<Tokenizer<JavaToken>> i
     }
 
     @Override protected JavaTokenizer self() { return this; }
+
+    @Override
+    public int getOffset() {
+        return -1;
+    }
 
     /**
      * Peeks at the character at the given offset from the current position.
@@ -570,5 +576,17 @@ public class JavaTokenizer extends AbstractJavaProcessor<Tokenizer<JavaToken>> i
     public JavaToken nextToken() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'nextToken'");
+    }
+
+    @Override
+    public void open(Reader reader) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'open'");
+    }
+
+    @Override
+    public List<JavaToken> tokenize(byte[] data) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'tokenize'");
     }
 }

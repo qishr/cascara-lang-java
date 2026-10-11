@@ -39,7 +39,7 @@ import io.github.qishr.cascara.lang.java.exception.ClassLoadException;
 import io.github.qishr.cascara.lang.java.model.ClassNode;
 import io.github.qishr.cascara.lang.java.model.JlsName;
 import io.github.qishr.cascara.lang.java.model.MethodNode;
-import io.github.qishr.cascara.lang.java.model.ModelUtil;
+import io.github.qishr.cascara.lang.java.model.VariableTypeParser;
 import io.github.qishr.cascara.lang.java.model.NameUtil;
 import io.github.qishr.cascara.lang.java.model.ParamNode;
 import io.github.qishr.cascara.lang.java.model.Reference;
@@ -70,17 +70,17 @@ class JreUtilsTests extends ModelTestEnvironment {
     @Test
     void getMethod_compatibleParams1() {
         ClassNode subClass = newClass("SubClass", model);
-        subClass.getSupertypes().add(ModelUtil.parseVariableType("java.lang.Object"));
-        subClass.getSupertypes().add(ModelUtil.parseVariableType("javax.lang.model.util.ElementScanner9"));
+        subClass.getSupertypes().add(VariableTypeParser.parseVariableType("java.lang.Object"));
+        subClass.getSupertypes().add(VariableTypeParser.parseVariableType("javax.lang.model.util.ElementScanner9"));
 
         JlsName methodName = NameUtil.createMemberName("scan");
         MethodNode scanMethod = new MethodNode("void", methodName);
         scanMethod.setOwnerName(node.getName());
         subClass.addMethod(scanMethod);
 
-        VariableTypeNode vt1 = ModelUtil.parseVariableType("javax.lang.model.element.Element");
+        VariableTypeNode vt1 = VariableTypeParser.parseVariableType("javax.lang.model.element.Element");
         ParamNode param1 = new ParamNode(vt1, NameUtil.createMemberName("param1"));
-        VariableTypeNode vt2 = ModelUtil.parseVariableType("java.lang.Integer");
+        VariableTypeNode vt2 = VariableTypeParser.parseVariableType("java.lang.Integer");
         ParamNode param2 = new ParamNode(vt2, NameUtil.createMemberName("param2"));
         scanMethod.addParam(param1);
         scanMethod.addParam(param2);
@@ -96,15 +96,15 @@ class JreUtilsTests extends ModelTestEnvironment {
     @Test
     void getMethod_compatibleParams2() {
         ClassNode subClass = newClass("SubClass", model);
-        subClass.getSupertypes().add(ModelUtil.parseVariableType("java.lang.Object"));
-        subClass.getSupertypes().add(ModelUtil.parseVariableType("java.util.ArrayList"));
+        subClass.getSupertypes().add(VariableTypeParser.parseVariableType("java.lang.Object"));
+        subClass.getSupertypes().add(VariableTypeParser.parseVariableType("java.util.ArrayList"));
 
         JlsName methodName = NameUtil.createMemberName("addAll");
         MethodNode addAllMethod = new MethodNode("void", methodName);
         addAllMethod.setOwnerName(node.getName());
         subClass.addMethod(addAllMethod);
 
-        VariableTypeNode vt1 = ModelUtil.parseVariableType("java.util.Collection<? extends String>");
+        VariableTypeNode vt1 = VariableTypeParser.parseVariableType("java.util.Collection<? extends String>");
         JlsName paramName = NameUtil.createMemberName("c");
         ParamNode param1 = new ParamNode(vt1, paramName);
         addAllMethod.addParam(param1);

@@ -49,7 +49,7 @@ import io.github.qishr.cascara.lang.java.model.FieldNode;
 import io.github.qishr.cascara.lang.java.model.InterfaceNode;
 import io.github.qishr.cascara.lang.java.model.JlsName;
 import io.github.qishr.cascara.lang.java.model.Link;
-import io.github.qishr.cascara.lang.java.model.ModelUtil;
+import io.github.qishr.cascara.lang.java.model.VariableTypeParser;
 import io.github.qishr.cascara.lang.java.model.ModuleNode;
 import io.github.qishr.cascara.lang.java.model.NameUtil;
 import io.github.qishr.cascara.lang.java.model.PackageNode;
@@ -130,7 +130,7 @@ public class ModelTestEnvironment {
     }
 
     protected FieldNode newField(String typeName, String name, TypeNode type) {
-        VariableTypeNode vt = ModelUtil.parseVariableType(typeName);
+        VariableTypeNode vt = VariableTypeParser.parseVariableType(typeName);
         JlsName fieldName = NameUtil.createMemberName(name);
         FieldNode fieldNode = new FieldNode(vt, fieldName);
         type.addField(fieldNode);
@@ -138,7 +138,7 @@ public class ModelTestEnvironment {
     }
 
     protected VariableTypeNode newVariableType(String typeName) {
-        return ModelUtil.parseVariableType(typeName);
+        return VariableTypeParser.parseVariableType(typeName);
     }
 
     protected Link newMethodReference(String typeName, String methodName) {

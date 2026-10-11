@@ -35,15 +35,15 @@
 
 package io.github.qishr.cascara.lang.java.exception;
 
-import io.github.qishr.cascara.common.diagnostic.code.DiagnosticCode;
+import io.github.qishr.cascara.common.diagnostic.message.DiagnosticMessage;
 import io.github.qishr.cascara.lang.java.modeler.ModelerException;
 
 public class JavaModelerException extends ModelerException {
-    public JavaModelerException(Throwable cause, DiagnosticCode code, Object... details) {
+    public JavaModelerException(Throwable cause, DiagnosticMessage code, Object... details) {
         super(null, cause, code, details);
     }
 
-    public JavaModelerException(DiagnosticCode code, Object... details) {
+    public JavaModelerException(DiagnosticMessage code, Object... details) {
         this(null, code, details);
     }
 }

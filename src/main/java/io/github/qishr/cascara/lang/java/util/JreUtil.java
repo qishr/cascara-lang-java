@@ -47,7 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import io.github.qishr.cascara.common.diagnostic.LocalizableIOException;
+import io.github.qishr.cascara.common.diagnostic.exception.LocalizableIOException;
 import io.github.qishr.cascara.common.util.JarFile;
 import io.github.qishr.cascara.lang.java.exception.ClassLoadException;
 import io.github.qishr.cascara.lang.java.model.JlsName;
@@ -62,7 +62,7 @@ public class JreUtil {
     }
 
     public static JarFile loadJarFile(String fileName) throws LocalizableIOException {
-        return JarFile.load(Path.of(fileName));
+        return JarFile.open(Path.of(fileName));
     }
 
     public static Module loadUnnamedModule() {

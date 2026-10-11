@@ -70,7 +70,7 @@ public class MethodNode extends AbstractMember {
     /// @param returnType the return type of the method.
     /// @param name       the name of the method.
     public MethodNode(String returnType, JlsName name) {
-        this.returnType = ModelUtil.parseVariableType(returnType);
+        this.returnType = VariableTypeParser.parseVariableType(returnType);
         this.name = name;
         kind = JavaSemanticNode.Kind.METHOD;
     }

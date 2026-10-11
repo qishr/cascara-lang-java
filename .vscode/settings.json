@@ -1,0 +1,18 @@
+{
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true",
+    "java.configuration.updateBuildConfiguration": "automatic",
+
+    "java.test.config": {
+        "vmArgs": [
+            "--add-opens=java.base/java.lang=cascara.common"
+        ],
+        "name": "test",
+        "modulePaths": ["${workspaceFolder}/build/modulepath"],
+        "module": "cascara.schema",
+        "classPaths": [
+            "${workspaceFolder}/build/classes/java/main",
+            "${workspaceFolder}/build/resources/main"
+        ]
+    }
+}

@@ -42,8 +42,8 @@ import javax.tools.Diagnostic.Kind;
 
 import com.sun.source.util.DocTreePath;
 
-import io.github.qishr.cascara.common.diagnostic.Reporter;
-import io.github.qishr.cascara.common.diagnostic.StandardReporter;
+import io.github.qishr.cascara.common.diagnostic.report.Reporter;
+import io.github.qishr.cascara.common.diagnostic.report.LocalReporter;
 import io.github.qishr.cascara.lang.java.modeler.MarkdownParser;
 
 // import io.github.sandydunlop.cascara.core.Context;
@@ -57,7 +57,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MarkdownParserTests {
     // private static Context ctx;
-    @Mock static Reporter reporter = new StandardReporter();
+    @Mock static Reporter reporter = new LocalReporter();
     //  {
     //     @Override
     //     public void print(Kind kind, String message) {

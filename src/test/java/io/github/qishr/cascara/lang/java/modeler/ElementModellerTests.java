@@ -81,8 +81,8 @@ import com.sun.source.doctree.SinceTree;
 import com.sun.source.util.DocTreePath;
 import com.sun.source.util.DocTrees;
 
-import io.github.qishr.cascara.common.diagnostic.Reporter;
-import io.github.qishr.cascara.common.diagnostic.StandardReporter;
+import io.github.qishr.cascara.common.diagnostic.report.Reporter;
+import io.github.qishr.cascara.common.diagnostic.report.LocalReporter;
 import io.github.qishr.cascara.lang.java.model.ClassNode;
 import io.github.qishr.cascara.lang.java.model.Deprecation;
 import io.github.qishr.cascara.lang.java.model.DirectiveNode;
@@ -91,7 +91,7 @@ import io.github.qishr.cascara.lang.java.model.FieldNode;
 import io.github.qishr.cascara.lang.java.model.JlsName;
 import io.github.qishr.cascara.lang.java.model.Link;
 import io.github.qishr.cascara.lang.java.model.MethodNode;
-import io.github.qishr.cascara.lang.java.model.ModelUtil;
+import io.github.qishr.cascara.lang.java.model.VariableTypeParser;
 import io.github.qishr.cascara.lang.java.model.ModuleNode;
 import io.github.qishr.cascara.lang.java.model.NameUtil;
 import io.github.qishr.cascara.lang.java.model.PackageNode;
@@ -160,7 +160,7 @@ class ElementModellerTests extends MockedDocletEnvironment {
     private SemanticModel apiMock;
     private DocletEnvironment envMock;
 
-    @Mock static Reporter reporter = new StandardReporter();
+    @Mock static Reporter reporter = new LocalReporter();
     //  {
     //     @Override
     //     public void print(javax.tools.Diagnostic.Kind kind, String message) {

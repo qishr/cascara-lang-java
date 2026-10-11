@@ -41,14 +41,14 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import io.github.qishr.cascara.common.diagnostic.Reporter;
-import io.github.qishr.cascara.common.diagnostic.StandardReporter;
+import io.github.qishr.cascara.common.diagnostic.report.Reporter;
+import io.github.qishr.cascara.common.diagnostic.report.LocalReporter;
 import io.github.qishr.cascara.lang.java.token.JavaToken;
 
 public class TokenizerTests {
     @Test
     void test_Tokenier() {
-        Reporter reporter = new StandardReporter();
+        Reporter reporter = new LocalReporter();
         JavaTokenizer tokenizer = new JavaTokenizer().setReporter(reporter);
 
         // A double quoted string containing an escaped double quote
