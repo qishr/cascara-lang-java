@@ -57,6 +57,14 @@ public class VariableTypeParser {
         }
         String fullTypeName = typeName.strip();
         VariableTypeNode type = parseTypes(fullTypeName);
+
+        // int b = fullTypeName.indexOf("<");
+        // if (b > -1) {
+        //     type.rawTypeName = fullTypeName.substring(0, b);
+        // } else {
+        //     type.rawTypeName = fullTypeName;
+        // }
+
         return type;
     }
 
@@ -115,6 +123,17 @@ public class VariableTypeParser {
                 parseArray(type.substring(openingBracket), param);
             }
 
+
+            if (!param.rawTypeName.equals("?")) {
+                try {
+                    Reference ref = NameUtil.createReference(param.rawTypeName);
+                    param.link = Link.to(ref);
+                } catch (IllegalArgumentException e) {
+                    // This should never happen
+                }
+            }
+
+
             return param;
         }
         int closingChevron = matchingClosingChevron(type, openingChevron);
@@ -153,6 +172,19 @@ public class VariableTypeParser {
         generic.boundingKind = boundingType;
         generic.boundingParameter = typeParameter;
         generic.rawTypeName = before;
+
+
+
+        if (!generic.rawTypeName.equals("?")) {
+            try {
+                Reference ref = NameUtil.createReference(generic.rawTypeName);
+                generic.link = Link.to(ref);
+            } catch (IllegalArgumentException e) {
+                // This should never happen
+            }
+        }
+
+
 
         after = parseArray(after, generic);
 
