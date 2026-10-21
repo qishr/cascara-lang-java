@@ -32,7 +32,7 @@
 // you do not wish to do so, delete this exception statement from your
 // version.
 
-
+/// Cascara Java language processors.
 module cascara.lang.java {
     requires jdk.compiler;
     requires transitive jdk.javadoc;
