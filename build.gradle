@@ -5,6 +5,13 @@ plugins {
 }
 
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+
 repositories {
 	mavenLocal()
 	mavenCentral()

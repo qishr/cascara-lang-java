@@ -221,7 +221,20 @@ public class ElementModeler implements Modeler<ModuleElement, PackageElement, Ty
     /// @return The constructed MethodNode, or null if errors occur.
     @Override
     public MethodNode modelMethod(ExecutableElement element) {
-        String returnTypeName = element.getReturnType().toString();
+        String returnTypeName = null;
+        returnTypeName = element.getReturnType().toString();
+
+        // "io.github.qishr.cascara.common.security.policy.@io.github.qishr.cascara.common.annotation.NonNull SignatureStatus"
+        TypeMirror rt = element.getReturnType();
+        if (rt instanceof DeclaredType dt) {
+            Element el = dt.asElement();
+            if (el instanceof TypeElement te) {
+                returnTypeName = te.getQualifiedName().toString();
+                // System.out.println("Debug2: " + returnTypeName);
+            }
+        }
+
+        // returnTypeName = element.getReturnType().toString();
         String packageString = environment.getElementUtils().getPackageOf(element.getEnclosingElement()).toString();
 
         TypeElement ownerElement = (TypeElement) element.getEnclosingElement();

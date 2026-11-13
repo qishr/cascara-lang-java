@@ -61,7 +61,7 @@ public class JreUtil {
         // Nothing to see here
     }
 
-    public static JarFile loadJarFile(String fileName) throws LocalizableIOException {
+    public static JarFile loadJarFile(String fileName) throws IOException {
         return JarFile.open(Path.of(fileName));
     }
 
