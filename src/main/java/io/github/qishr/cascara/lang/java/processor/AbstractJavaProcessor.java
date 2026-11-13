@@ -37,7 +37,7 @@ package io.github.qishr.cascara.lang.java.processor;
 
 import io.github.qishr.cascara.common.diagnostic.report.NoOpReporter;
 import io.github.qishr.cascara.common.diagnostic.report.Reporter;
-import io.github.qishr.cascara.common.lang.util.LanguageOptions;
+import io.github.qishr.cascara.common.lang.util.LanguageConfig;
 import io.github.qishr.cascara.common.lang.processor.Processor;
 import io.github.qishr.cascara.common.util.ContentType;
 import io.github.qishr.cascara.common.property.Properties;
@@ -79,7 +79,7 @@ public abstract class AbstractJavaProcessor<P extends Processor> implements Proc
 
     /// {@inheritDoc}
     @Override
-    public P setOptions(LanguageOptions<?> options) {
+    public P setConfig(LanguageConfig<?> options) {
         this.options = (JavaOptions) options;
         return self();
     }

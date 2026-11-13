@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.github.qishr.cascara.common.diagnostic.report.Reporter;
-import io.github.qishr.cascara.common.lang.util.LanguageOptions;
+import io.github.qishr.cascara.common.lang.util.LanguageConfig;
 import io.github.qishr.cascara.common.lang.processor.Tokenizer;
 import io.github.qishr.cascara.lang.java.JavaOptions;
 import io.github.qishr.cascara.lang.java.token.JavaToken;
@@ -141,7 +141,7 @@ public class JavaTokenizer extends AbstractJavaProcessor<Tokenizer<JavaToken>> i
     }
 
     @Override
-    public JavaTokenizer setOptions(LanguageOptions<?> options) {
+    public JavaTokenizer setConfig(LanguageConfig<?> options) {
         this.options = (JavaOptions)options;
         return this;
     }

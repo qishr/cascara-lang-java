@@ -35,7 +35,7 @@
 
 package io.github.qishr.cascara.lang.java.processor;
 
-import io.github.qishr.cascara.common.lang.util.LanguageOptions;
+import io.github.qishr.cascara.common.lang.util.LanguageConfig;
 
-public class JavaOptions extends LanguageOptions<JavaOptions> {
+public class JavaOptions extends LanguageConfig<JavaOptions> {
 }

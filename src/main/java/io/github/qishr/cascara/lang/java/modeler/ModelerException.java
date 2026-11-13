@@ -36,15 +36,15 @@
 package io.github.qishr.cascara.lang.java.modeler;
 
 import io.github.qishr.cascara.common.diagnostic.exception.LocalizableRuntimeException;
-import io.github.qishr.cascara.common.diagnostic.message.DiagnosticMessage;
+import io.github.qishr.cascara.common.diagnostic.message.LocalizableMessage;
 
 public class ModelerException extends LocalizableRuntimeException {
 
-    public ModelerException(Throwable cause, DiagnosticMessage code, Object... details) {
+    public ModelerException(Throwable cause, LocalizableMessage code, Object... details) {
         super(null, cause, code, details);
     }
 
-    public ModelerException(DiagnosticMessage code, Object... details) {
+    public ModelerException(LocalizableMessage code, Object... details) {
         this(null, code, details);
     }
 
